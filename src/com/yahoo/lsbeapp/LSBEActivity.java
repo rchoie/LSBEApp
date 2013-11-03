@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 
+import com.yahoo.lsbeapp.fragments.BizDetailFragment;
 import com.yahoo.lsbeapp.fragments.BookmarksFragment;
 import com.yahoo.lsbeapp.fragments.BrowseFragment;
 import com.yahoo.lsbeapp.fragments.BrowseFragment.OnClickListener;
@@ -113,14 +114,11 @@ public class LSBEActivity extends FragmentActivity implements TabListener,OnClic
 	/**
 	 * Implement listener for ListView (biz) Events
 	 */
-	
-	
 	@Override
 	public void onItemSelected(String gid) {
 		android.support.v4.app.FragmentTransaction fts = getSupportFragmentManager().beginTransaction();
-		//fts.replace(R.id.frame_container, BizDetailFragment.newInstance(gid));
+		fts.replace(R.id.frame_container, BizDetailFragment.newInstance(gid));
 		fts.commit();
 	}
-
 
 }

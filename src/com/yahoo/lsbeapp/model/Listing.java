@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class Listing extends BaseModel {
 
 	
@@ -18,6 +20,11 @@ public class Listing extends BaseModel {
 	private String state;
 	private String imageUrl;
 	private String id;
+	private ArrayList<Review> reviews;
+
+	public Listing(JSONObject jsonObj) {
+		super(jsonObj);
+	}
 
 	public String getId() {
 		return id;
@@ -50,7 +57,12 @@ public class Listing extends BaseModel {
 	private String getStreet() {
 		return street;
 	}
+	
 
+	public ArrayList<Review> getReviews() {
+		return reviews;
+	}
+	
 	public String getAddress() {
 		if (address == null) {
 			StringBuffer sb = new StringBuffer();
@@ -65,29 +77,34 @@ public class Listing extends BaseModel {
 	}
 
 	public static Listing fromJSON(JSONObject jsonObj) {
-		Listing biz = new Listing();
+		Listing biz = new Listing(jsonObj);
 		try {
-			biz.id = jsonObj.getString("id");
-			biz.title = jsonObj.getString("dtitle");
-			biz.street = jsonObj.getString("addr");
-			biz.city = jsonObj.getString("city");
-			biz.state = jsonObj.getString("state");
-			biz.rating	= jsonObj.getString("rating");
-			biz.phone = jsonObj.getString("phone");
+			biz.id = biz.getString("id");
+			biz.title = biz.getString("dtitle");
+			biz.street = biz.getString("addr");
+			biz.city = biz.getString("city");
+			biz.state = biz.getString("state");
+			biz.rating	= biz.getString("rating");
+			biz.phone = biz.getString("phone");
 			
-			
+			//reviews..
+			JSONObject reviewObj = biz.getJSONObject("reviews");
+			if (reviewObj != null && reviewObj.getInt("count") > 0) {
+				biz.reviews = Review.fromJSON(reviewObj.getJSONArray("review"));
+			}
+					
 			//Image
-			JSONObject imgObj = jsonObj.getJSONObject("fullsize_photos");
+			JSONObject imgObj = biz.getJSONObject("fullsize_photos");
 			if (imgObj.getInt("count") > 0) {
 				biz.imageUrl = imgObj.getJSONArray("content").getJSONObject(0).getString("url");
 			} else {
 				biz.imageUrl = null;
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Log.d("pinank", e.getMessage());
 			return null;
 		}
-		
+
 		return biz;
 	}
 
@@ -115,4 +132,3 @@ public class Listing extends BaseModel {
 
 	
 }
-
