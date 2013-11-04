@@ -2,6 +2,8 @@ package com.yahoo.lsbeapp.fragments;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -10,6 +12,7 @@ import com.yahoo.lsbeapp.ListingAdapter;
 import com.yahoo.lsbeapp.R;
 import com.yahoo.lsbeapp.db.ListingsDB;
 import com.yahoo.lsbeapp.model.Listing;
+import com.yahoo.lsbeapp.utils.LSBEAssets;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -28,6 +31,9 @@ import android.widget.Toast;
 
 public class SearchResultsFragment extends Fragment {
 
+	//TODO: Enable correct XMLLOCAL_URL
+	private static final String XMLLOCAL_URL = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=";
+	
 	ListingAdapter adapter;
 	private TextView tvQuery;
 	private ListView lvBiz;
@@ -90,13 +96,10 @@ public class SearchResultsFragment extends Fragment {
     	String xmllocalQuery = null;
     	
     	if (csz != null) {
-    	    //xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&csz=" + Uri.encode(csz);
-    	    xmllocalQuery = "http://api1.stage.ls.sk1.yahoo.com/xmllocal?output=json&stx=" + Uri.encode(query) + "&csz=" + Uri.encode(csz);
-
+    	    xmllocalQuery = XMLLOCAL_URL + Uri.encode(query) + "&csz=" + Uri.encode(csz);
     	}
     	else if (lat != null && lon != null) {
-    		//xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
-    		xmllocalQuery = "http://api1.stage.ls.sk1.yahoo.com/xmllocal?output=json&stx=" + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
+	    xmllocalQuery = XMLLOCAL_URL + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
     	}
     	
 		Log.d("DEBUG", xmllocalQuery);
@@ -114,6 +117,30 @@ public class SearchResultsFragment extends Fragment {
 	                e.printStackTrace();
 	            }
 			}
+			
+			//TODO:============================
+			//TODO: REMOVE THE LINES BELOW THIS:
+			//TODO:============================
+			public void onFailure(Throwable t, JSONObject jsonObj) {
+				try {
+					Log.d("pinank", "In FAILURE");
+					//Fake Results..
+					jsonObj = LSBEAssets.getFakeResults(getActivity(), "search_results.txt");
+					JSONArray jsonArray = jsonObj.getJSONObject("ResultSet").getJSONArray("Result");
+					ArrayList<Listing> listings = Listing.fromJSON(jsonArray);
+					getAdapter().addAll(listings);
+					
+					//ListView lvBiz = (ListView) getActivity().findViewById(R.id.lvBiz);
+					//BizAdapter adapter = new BizAdapter(getActivity(), R.layout.biz_item, Listing.fromJSON(array));
+					//lvBiz.setAdapter(adapter);
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			//TODO:============================
+			//TODO: REMOVE THE LINES ABOVE THIS:
+			//TODO:============================
 		});
 	 
     }

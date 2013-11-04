@@ -9,8 +9,11 @@ import com.yahoo.lsbeapp.CategoryAdapter;
 import com.yahoo.lsbeapp.R;
 import com.yahoo.lsbeapp.model.Category;
 import android.app.Activity;
+import android.content.Context;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,12 +26,14 @@ public class BrowseFragment extends Fragment {
 	private OnClickListener listener;
 	CategoryAdapter adapter;
 	
-    public static BrowseFragment newInstance(String arg) {
+    public static BrowseFragment newInstance(String lat, String lon) {
     	
     	BrowseFragment browseFragment = new BrowseFragment();
         Bundle args = new Bundle();
-        args.putString("arg", arg);
+        args.putString("lat", lat);
+        args.putString("lon", lon);
         browseFragment.setArguments(args);
+        Log.d("DEBUG", "browse lat : " + lat + ", lon : " + lon);
         return browseFragment;
         
     }
@@ -59,7 +64,7 @@ public class BrowseFragment extends Fragment {
 		
 		//String arg = getArguments().getString("arg");
 		
-		String categoryQuery = "http://api1.stage.ls.sk1.yahoo.com:4080/xmlcategories";
+		String categoryQuery = "http://api1.stage.ls.sk1.yahoo.com/xmlcategories";
     	AsyncHttpClient client = new AsyncHttpClient();
 		client.get(categoryQuery,
 				   new JsonHttpResponseHandler() {

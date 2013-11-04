@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class Listing extends BaseModel implements Serializable {
 
 	/**
@@ -25,6 +27,7 @@ public class Listing extends BaseModel implements Serializable {
 	private String id;
 	private String lat;
 	private String lon;
+	private ArrayList<Review> reviews;
 
 	public void setImageUrl(String imageUrl) {
 		this.imageUrl = imageUrl;
@@ -70,6 +73,14 @@ public class Listing extends BaseModel implements Serializable {
 		this.lon = lon;
 	}
 
+	public Listing(JSONObject jsonObj) {
+		super(jsonObj);
+	}
+
+	public Listing() {
+		super();
+	}
+
 	public String getId() {
 		return id;
 	}
@@ -102,6 +113,10 @@ public class Listing extends BaseModel implements Serializable {
 		return street;
 	}
 
+	public ArrayList<Review> getReviews() {
+		return reviews;
+	}
+	
 	public String getAddress() {
 		if (address == null) {
 			StringBuffer sb = new StringBuffer();
@@ -124,7 +139,7 @@ public class Listing extends BaseModel implements Serializable {
 	}
 	
 	public static Listing fromJSON(JSONObject jsonObj) {
-		Listing biz = new Listing();
+		Listing biz = new Listing(jsonObj);
 		try {
 			biz.id = jsonObj.getString("id");
 			biz.title = jsonObj.getString("dtitle");
@@ -134,20 +149,26 @@ public class Listing extends BaseModel implements Serializable {
 			biz.rating	= jsonObj.getString("rating");
 			biz.phone = jsonObj.getString("phone");
 			biz.lat = jsonObj.getString("lat");
-			biz.lon = jsonObj.getString("lon");	
-			
+			biz.lon = jsonObj.getString("lon");
+
+			//reviews..
+			JSONObject reviewObj = biz.getJSONObject("reviews");
+			if (reviewObj != null && reviewObj.getInt("count") > 0) {
+				biz.reviews = Review.fromJSON(reviewObj.getJSONArray("review"));
+			}
+					
 			//Image
-			JSONObject imgObj = jsonObj.getJSONObject("fullsize_photos");
+			JSONObject imgObj = biz.getJSONObject("fullsize_photos");
 			if (imgObj.getInt("count") > 0) {
 				biz.imageUrl = imgObj.getJSONArray("content").getJSONObject(0).getString("url");
 			} else {
 				biz.imageUrl = null;
 			}
 		} catch (JSONException e) {
-			e.printStackTrace();
+			Log.d("pinank", e.getMessage());
 			return null;
 		}
-		
+
 		return biz;
 	}
 
@@ -172,7 +193,4 @@ public class Listing extends BaseModel implements Serializable {
 		return bizs;
 	}
 
-
-	
 }
-

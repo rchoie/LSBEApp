@@ -1,6 +1,12 @@
 package com.yahoo.lsbeapp.fragments;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -11,6 +17,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.yahoo.lsbeapp.R;
+import com.yahoo.lsbeapp.SearchMapResultsActivity;
+import com.yahoo.lsbeapp.db.ListingsDB;
+import com.yahoo.lsbeapp.model.Listing;
 
 public class SearchInputFragment extends Fragment {
 	
@@ -43,7 +52,22 @@ public class SearchInputFragment extends Fragment {
 			public void onClick(View v) {
 				String query = etQuery.getText().toString();
 				String location = etLocation.getText().toString();
+				
 				listener.onSearchButtonClick(query, location);
+				
+				/*
+				ListingsDB listingsDB = new ListingsDB(getActivity());
+				listingsDB.open();
+				ArrayList<Listing> listings = (ArrayList<Listing>) listingsDB.getAllListings();
+
+		    	Intent i = new Intent(getActivity(), SearchMapResultsActivity.class);
+		    	i.putExtra("listings", listings);
+		    	i.putExtra("lat", "37.77");
+		    	i.putExtra("lon", "-122.42");
+		    	startActivity(i);
+				*/
+				
+				
 			}
 		});		
 	}
