@@ -2,17 +2,13 @@ package com.yahoo.lsbeapp.fragments;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.JsonHttpResponseHandler;
-import com.loopj.android.http.RequestParams;
-import com.yahoo.lsbeapp.CategoryAdapter;
 import com.yahoo.lsbeapp.ListingAdapter;
 import com.yahoo.lsbeapp.R;
-import com.yahoo.lsbeapp.model.Category;
+import com.yahoo.lsbeapp.db.ListingsDB;
 import com.yahoo.lsbeapp.model.Listing;
 
 import android.app.Activity;
@@ -24,9 +20,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SearchResultsFragment extends Fragment {
 
@@ -39,12 +37,14 @@ public class SearchResultsFragment extends Fragment {
 		public void onItemSelected(String gid);
 	}
 	
-    public static SearchResultsFragment newInstance(String query, String location) {
+    public static SearchResultsFragment newInstance(String query, String location, String lat, String lon) {
     	
     	SearchResultsFragment searchFragment = new SearchResultsFragment();
         Bundle args = new Bundle();
         args.putString("query", query);
         args.putString("location", location);
+        args.putString("lat", lat);
+        args.putString("lon", lon);
         searchFragment.setArguments(args);
         return searchFragment;
         
@@ -58,10 +58,16 @@ public class SearchResultsFragment extends Fragment {
 		
 		String query = getArguments().getString("query");
 		String location = getArguments().getString("location");
-		
+		String lat = getArguments().getString("lat");
+		String lon = getArguments().getString("lon");
+
 		if (query != null && location != null) {
 			lsbeSearch(query, location, null, null);
 		}
+		else if (query != null && lat != null && lon != null) {
+			lsbeSearch(query, null, lat, lon);
+		}
+
 	}
 	
 	@Override
@@ -84,10 +90,13 @@ public class SearchResultsFragment extends Fragment {
     	String xmllocalQuery = null;
     	
     	if (csz != null) {
-    	    xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&csz=" + Uri.encode(csz);
+    	    //xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&csz=" + Uri.encode(csz);
+    	    xmllocalQuery = "http://api1.stage.ls.sk1.yahoo.com/xmllocal?output=json&stx=" + Uri.encode(query) + "&csz=" + Uri.encode(csz);
+
     	}
     	else if (lat != null && lon != null) {
-    		xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
+    		//xmllocalQuery = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=" + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
+    		xmllocalQuery = "http://api1.stage.ls.sk1.yahoo.com/xmllocal?output=json&stx=" + Uri.encode(query) + "&loc=point:" + lat + "," + lon;
     	}
     	
 		Log.d("DEBUG", xmllocalQuery);
@@ -125,6 +134,7 @@ public class SearchResultsFragment extends Fragment {
 		lvBiz.setAdapter(adapter);
 
 	}
+	
 	public ListingAdapter getAdapter() {
 		return adapter;
 	}
@@ -144,6 +154,28 @@ public class SearchResultsFragment extends Fragment {
 			}
 			
 		});
+		
+		lvBiz.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				
+				Listing biz = (Listing) parent.getItemAtPosition(position);
+
+				Log.d("DEBUG", "Save listing to bookmark");
+				ListingsDB listingsDB = new ListingsDB(getActivity());
+				listingsDB.open();
+				listingsDB.addLisitng(biz);
+				listingsDB.close();
+				Log.d("DEBUG", "after Save listing to bookmark");
+				
+				Toast.makeText(getActivity(), "Saved to bookmark", Toast.LENGTH_SHORT).show();
+				
+				return false;
+			}
+		});
+		
 		// TODO Auto-generated method stub
 		
 	}
