@@ -1,13 +1,18 @@
 package com.yahoo.lsbeapp.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Listing extends BaseModel {
+public class Listing extends BaseModel implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7027443567011627382L;
 	
 	private String title;
 	private String phone;
@@ -18,6 +23,52 @@ public class Listing extends BaseModel {
 	private String state;
 	private String imageUrl;
 	private String id;
+	private String lat;
+	private String lon;
+
+	public void setImageUrl(String imageUrl) {
+		this.imageUrl = imageUrl;
+	}
+
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public void setRating(String rating) {
+		this.rating = rating;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public void setStreet(String street) {
+		this.street = street;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public void setLat(String lat) {
+		this.lat = lat;
+	}
+
+	public void setLon(String lon) {
+		this.lon = lon;
+	}
 
 	public String getId() {
 		return id;
@@ -39,15 +90,15 @@ public class Listing extends BaseModel {
 		return rating;
 	}
 
-	private String getState() {
+	public String getState() {
 		return state;
 	}
 
-	private String getCity() {
+	public String getCity() {
 		return city;
 	}
 
-	private String getStreet() {
+	public String getStreet() {
 		return street;
 	}
 
@@ -64,6 +115,14 @@ public class Listing extends BaseModel {
 		return address;
 	}
 
+	public String getLat() {
+		return lat;
+	}
+
+	public String getLon() {
+		return lon;
+	}
+	
 	public static Listing fromJSON(JSONObject jsonObj) {
 		Listing biz = new Listing();
 		try {
@@ -74,7 +133,8 @@ public class Listing extends BaseModel {
 			biz.state = jsonObj.getString("state");
 			biz.rating	= jsonObj.getString("rating");
 			biz.phone = jsonObj.getString("phone");
-			
+			biz.lat = jsonObj.getString("lat");
+			biz.lon = jsonObj.getString("lon");	
 			
 			//Image
 			JSONObject imgObj = jsonObj.getJSONObject("fullsize_photos");
