@@ -31,6 +31,6 @@
         android:layout_below="@+id/etLocation"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="18dp"
-        android:text="@string/search_button" />
+        android:text="@string/button_search" />
     
 </RelativeLayout>

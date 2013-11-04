@@ -6,6 +6,10 @@
     <string name="hello_world">Hello world -Ronny Pinank 5:48pm!</string>
     <string name="location_hint">location</string>
     <string name="query_hint">search term</string>
-    <string name="search_button">Search</string>
-
+    <string name="button_search">Search</string>
+	<string name="biz_title">Biz Title</string>
+	<string name="button_bookmark">Bookmark</string>
+	<string name="button_directions">Directions</string>
+	<string name="button_picture">Add Photo</string>
+    
 </resources>

@@ -1,26 +1,38 @@
 package com.yahoo.lsbeapp.model;
 
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 public class BaseModel {
-
-    protected JSONObject jsonObject;
-
-    public String getJSONString() {
-        return jsonObject.toString();
-    }
-
-    protected String getString(String name) {
-        try {
-            return jsonObject.getString(name);
-        } catch (JSONException e) {
+	public JSONObject jsonObject;
+	
+	public BaseModel() {
+		super();
+	}
+	
+	public BaseModel(JSONObject json) {
+		this.jsonObject = json;
+	}
+	
+	public String getString(String key) {
+		try {
+			return jsonObject.getString(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public int getInt(String key) {
+		try {
+			return jsonObject.getInt(key);
+		} catch (JSONException e) {
             e.printStackTrace();
-            return null;
-        }
-    }
-
+			return 0;
+		}
+	}
+	
     protected long getLong(String name) {
         try {
             return jsonObject.getLong(name);
@@ -30,30 +42,28 @@ public class BaseModel {
         }
     }
 
-    protected int getInt(String name) {
-        try {
-            return jsonObject.getInt(name);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    protected double getDouble(String name) {
-        try {
-            return jsonObject.getDouble(name);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
-
-    protected boolean getBoolean(String name) {
-        try {
-            return jsonObject.getBoolean(name);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+	public double getDouble(String key) {
+		try {
+			return jsonObject.getDouble(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return 0;
+		}
+	}
+	
+	public JSONObject getJSONObject(String key) {
+		JSONObject jsonObj;
+		try {
+			jsonObj = jsonObject.getJSONObject(key);
+		} catch(JSONException e) {
+			jsonObj = null;
+		}
+		return jsonObj;
+	}
+	
+	public static BaseModel fromJSON(JSONObject jsonObj) {
+		BaseModel baseModel = new BaseModel();
+		return baseModel;
+	}
 }
+
