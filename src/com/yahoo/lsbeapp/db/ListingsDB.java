@@ -3,16 +3,14 @@ package com.yahoo.lsbeapp.db;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.yahoo.lsbeapp.model.Listing;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteDatabase.CursorFactory;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+
+import com.yahoo.lsbeapp.model.Listing;
 
 public class ListingsDB {
 

@@ -30,8 +30,7 @@ import com.yahoo.lsbeapp.utils.LSBEAssets;
 public class BizDetailFragment extends Fragment {
 
 	//TODO: enable correct url..
-	//private static final String LOCAL_DETAIL_API_URL = "http://dd.local.yahoo.com:4080/xmllocal?cust_nm=pinank&output=json";
-	private static final String LOCAL_DETAIL_API_URL = "http://yahoo.com";
+	private static final String LOCAL_DETAIL_API_URL = "http://dd.local.yahoo.com:4080/xmllocal?cust_nm=pinank&output=json";
 	private String gid;
 	private TextView tvTitle;
 	private TextView tvAddress;

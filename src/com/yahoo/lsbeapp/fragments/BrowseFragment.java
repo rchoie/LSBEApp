@@ -3,14 +3,8 @@ package com.yahoo.lsbeapp.fragments;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
-import com.loopj.android.http.AsyncHttpClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-import com.yahoo.lsbeapp.CategoryAdapter;
-import com.yahoo.lsbeapp.R;
-import com.yahoo.lsbeapp.model.Category;
+
 import android.app.Activity;
-import android.content.Context;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,8 +12,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.yahoo.lsbeapp.CategoryAdapter;
+import com.yahoo.lsbeapp.R;
+import com.yahoo.lsbeapp.model.Category;
 
 public class BrowseFragment extends Fragment {
 
