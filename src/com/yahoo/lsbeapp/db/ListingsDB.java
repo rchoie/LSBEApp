@@ -47,12 +47,7 @@ public class ListingsDB {
 		values.put(SQLiteHelper.RATING, listing.getRating());
 		values.put(SQLiteHelper.TIMESTAMP, Float.toString(System.currentTimeMillis()/1000));
 
-		if (database == null) {
-			Log.d("DEBUG", "data is null");
-		}
 		long insertId = database.insert(SQLiteHelper.TABLE_NAME, null, values);
-		Log.d("DEBUG", "insert id : " + insertId);
-
 		
 	}
 	
@@ -72,6 +67,7 @@ public class ListingsDB {
 			     				SQLiteHelper.RATING,
 			     				SQLiteHelper.TIMESTAMP
 							  };
+		
 		Cursor cursor = database.query(SQLiteHelper.TABLE_NAME, allColumns, null, null, null, null, null);
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
@@ -81,28 +77,11 @@ public class ListingsDB {
 		}
 	    cursor.close();
 	    return listings;
-	    
-		/*
-		  public List<Comment> getAllComments() {
-			    List<Comment> comments = new ArrayList<Comment>();
 
-			    Cursor cursor = database.query(MySQLiteHelper.TABLE_COMMENTS,
-			        allColumns, null, null, null, null, null);
-
-			    cursor.moveToFirst();
-			    while (!cursor.isAfterLast()) {
-			      Comment comment = cursorToComment(cursor);
-			      comments.add(comment);
-			      cursor.moveToNext();
-			    }
-			    // make sure to close the cursor
-			    cursor.close();
-			    return comments;
-			  }
-			  */
 	}
 	
 	  private Listing cursorToListing(Cursor cursor) {
+		  
 		  Listing listing = new Listing();
 		  listing.setId(cursor.getString(1));
 		  listing.setTitle(cursor.getString(2));
@@ -114,15 +93,7 @@ public class ListingsDB {
 		  listing.setPhone(cursor.getString(8));
 		  listing.setImageUrl(cursor.getString(9));
 		  listing.setRating(cursor.getString(10));
-		  //listing.set(cursor.getString());
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(0));
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(1));
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(2));
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(3));
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(5));
-		  Log.d("DEBUG", "Get from db : " + cursor.getString(10));
 
-		  
 		  return listing;
 	  }
 

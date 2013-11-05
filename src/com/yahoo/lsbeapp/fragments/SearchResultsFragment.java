@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
+import com.yahoo.lsbeapp.EndlessScrollListener;
 import com.yahoo.lsbeapp.ListingAdapter;
 import com.yahoo.lsbeapp.R;
 import com.yahoo.lsbeapp.SearchMapResultsActivity;
@@ -35,7 +36,7 @@ import com.yahoo.lsbeapp.utils.LSBEAssets;
 public class SearchResultsFragment extends Fragment {
 
 	//TODO: Enable correct XMLLOCAL_URL
-	private static final String XMLLOCAL_URL = "http://dd.local.yahoo.com:4080/xmllocal?output=json&stx=";
+	private static final String XMLLOCAL_URL = "http://api1.stage.ls.sk1.yahoo.com/xmllocal?output=json&stx=";
 	
 	ListingAdapter adapter;
 	private TextView tvQuery;
@@ -44,9 +45,10 @@ public class SearchResultsFragment extends Fragment {
 	private Button btnMap;
 
 	private String query;
-	private String location = "NY";
+	private String location;
 	private String lat;
 	private String lon;
+	private String searchMethod = null;
 
 	private ArrayList<Listing> listings;
 
@@ -67,7 +69,7 @@ public class SearchResultsFragment extends Fragment {
         
     }
     
-    
+ 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 
@@ -81,22 +83,27 @@ public class SearchResultsFragment extends Fragment {
 		if (query != null && location != null) {
 			lsbeSearch(query, location);
 			findLocationFromCity();
+			searchMethod = "csz";
 		}
 		else if (query != null && lat != null && lon != null) {
 			lsbeSearch(query, null);
 			findLocationFromLatLong();
+			searchMethod = "ll";
 		}
 
 	}
 	
+	protected void customLoadMoreDataFromApi(int page) {
+		// TODO Auto-generated method stub
+	}
+
+
 	private void findLocationFromLatLong() {
-		//TODO: get location from findLocation..
 	
 		String findLocationQuery = "http://gws2.maps.yahoo.com/findlocation?q=" + lat + "+" + lon + "&gflags=R&flags=J";
 
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(findLocationQuery, new JsonHttpResponseHandler() {
-			//private ArrayList<Listing> listings;
 
 			@Override
 			public void onSuccess(JSONObject listingsJson) {
@@ -164,15 +171,11 @@ public class SearchResultsFragment extends Fragment {
 
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(xmllocalQuery, new JsonHttpResponseHandler() {
-			//private ArrayList<Listing> listings;
 
 			@Override
 			public void onSuccess(JSONObject listingsJson) {
 				try {
 					listings = Listing.fromJSON(listingsJson.getJSONObject("ResultSet").getJSONArray("Result"));
-					//lat = listingsJson.getJSONObject("ResultSet").getString("lat");
-					//lon = listingsJson.getJSONObject("ResultSet").getString("lon");
-
 					getAdapter().addAll(listings);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -200,6 +203,45 @@ public class SearchResultsFragment extends Fragment {
 
 	}
     
+	public void loadMoreSearchResults(int page, int totalItemsCount) {
+		
+		String xmllocalQuery = null;
+
+		int begin = (page - 1) * 10 + 1;
+		
+		if (searchMethod == "csz") {
+			xmllocalQuery = XMLLOCAL_URL + Uri.encode(query) + "&csz="
+					+ Uri.encode(location);
+		} else {
+			xmllocalQuery = XMLLOCAL_URL + Uri.encode(query) + "&loc=point:"
+					+ lat + "," + lon;
+		}
+
+		xmllocalQuery += "&begin=" + begin;
+		
+		Log.d("DEBUG", "load more query : " + xmllocalQuery);
+		Log.d("DEBUG", "totalItemCount : " + totalItemsCount);
+		if (totalItemsCount > 400) {
+			return;
+		}
+		
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(xmllocalQuery, new JsonHttpResponseHandler() {
+
+			@Override
+			public void onSuccess(JSONObject listingsJson) {
+				try {
+					listings = Listing.fromJSON(listingsJson.getJSONObject("ResultSet").getJSONArray("Result"));
+					getAdapter().addAll(listings);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+
+	}
+	
+	
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -210,7 +252,7 @@ public class SearchResultsFragment extends Fragment {
 		ArrayList<Listing> listings = new ArrayList<Listing>();
 		adapter = new ListingAdapter(getActivity(), listings);
 		lvBiz.setAdapter(adapter);
-		tvQuery.setText(query + ", " + location);
+		//tvQuery.setText(query + ", " + location);
 
 	}
 	
@@ -264,19 +306,30 @@ public class SearchResultsFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				//TODO: Call Map Activity here..
-			
-				//ListingsDB listingsDB = new ListingsDB(getActivity());
-				//listingsDB.open();
-				//ArrayList<Listing> listings = (ArrayList<Listing>) listingsDB.getAllListings();
-
+				
+				int n = getAdapter().getCount();
+				ArrayList<Listing> allListings = new ArrayList<Listing>(n);
+				for (int j=0; j<n; j++) {
+					allListings.add(getAdapter().getItem(j));
+				}
+				
 		    	Intent i = new Intent(getActivity(), SearchMapResultsActivity.class);
-		    	i.putExtra("listings", listings);
+		    	Log.d("DEBUG", "maps view listing size : " + listings.size());
+		    	i.putExtra("listings", allListings);
 		    	i.putExtra("lat", lat);
 		    	i.putExtra("lon", lon);
 		    	startActivity(i);
 				
 				Toast.makeText(getActivity(), "Showing Map View", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		lvBiz.setOnScrollListener(new EndlessScrollListener() {
+			
+			@Override
+			public void onLoadMore(int page, int totalItemsCount) {
+				// TODO Auto-generated method stub
+				loadMoreSearchResults(page, totalItemsCount);
 			}
 		});
 				

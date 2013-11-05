@@ -32,19 +32,25 @@ public class SearchMapResultsActivity extends FragmentActivity {
 		
 		map.setMyLocationEnabled(true);
 		
-		if (map!=null) {
+		if (map != null) {
 			
 			for (int j=0; j<listings.size(); j++) {
 
 				LatLng ll = new LatLng(Double.parseDouble(listings.get(j).getLat()),  Double.parseDouble(listings.get(j).getLon()));			  
 				String title = listings.get(j).getTitle();
-				String address = listings.get(j).getStreet() + ", " + listings.get(j).getCity() + ", " + listings.get(j).getState();
+				String address = "";
+				if (listings.get(j).getStreet() != null && !listings.get(j).getStreet().isEmpty()) {
+					address = listings.get(j).getStreet() + ", ";
+				}
+				
+				address += listings.get(j).getCity() + ", " + listings.get(j).getState();
+				
 				Marker marker = map.addMarker(new MarkerOptions().position(ll).title(title).snippet(address));
 
 			}
 			
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(searchLocation, 15));
-			map.animateCamera(CameraUpdateFactory.zoomTo(13), 2000, null);
+			map.animateCamera(CameraUpdateFactory.zoomTo(13), 1000, null);
       
 		}		
 
