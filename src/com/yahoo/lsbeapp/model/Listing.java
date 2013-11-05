@@ -120,11 +120,18 @@ public class Listing extends BaseModel implements Serializable {
 	public String getAddress() {
 		if (address == null) {
 			StringBuffer sb = new StringBuffer();
-			sb.append(getStreet())
+			if (!getStreet().isEmpty()) {
+				sb.append(getStreet())
 				.append(", ")
 				.append(getCity())
 				.append(", ")
 				.append(getState());
+			}
+			else {
+				sb.append(getCity())
+				.append(", ")
+				.append(getState());
+			}
 			address = sb.toString();
 		}
 		return address;
