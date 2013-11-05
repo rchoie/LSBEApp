@@ -2,6 +2,7 @@ package com.yahoo.lsbeapp.fragments;
 
 import java.util.List;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -17,12 +18,14 @@ import android.widget.ListView;
 import com.yahoo.lsbeapp.ListingAdapter;
 import com.yahoo.lsbeapp.R;
 import com.yahoo.lsbeapp.db.ListingsDB;
+import com.yahoo.lsbeapp.fragments.SearchResultsFragment.ItemSelectedListener;
 import com.yahoo.lsbeapp.model.Listing;
 
 public class BookmarksFragment extends Fragment {
 
 	private ListingsDB listingsDB = null;
 	ListingAdapter adapter;
+	private ItemSelectedListener listener;
 
     public static BookmarksFragment newInstance(String arg) {
     	
@@ -49,6 +52,15 @@ public class BookmarksFragment extends Fragment {
 		
 	}
 
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		if (activity instanceof ItemSelectedListener) {
+			listener = (ItemSelectedListener) activity;
+		} else {
+			throw new ClassCastException(activity.toString() + " must implement ItemSelectedListener");
+		}
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inf, ViewGroup parent, Bundle savedInstanceState) {
@@ -83,12 +95,26 @@ public class BookmarksFragment extends Fragment {
 		lvBookmarks.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> adapterView, View parent, int position,
+			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long rowId) {
-
-				// go to detail page.
+				Listing biz = (Listing) parent.getItemAtPosition(position);
+				listener.onItemSelected(biz.getId());
 			}
 		});
+		
+		
+		/*
+		 * 		lvBiz.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				Listing biz = (Listing) parent.getItemAtPosition(position);
+				listener.onItemSelected(biz.getId());
+			}
+			
+		});
+		 * 
+		 */
 
 	}
 
