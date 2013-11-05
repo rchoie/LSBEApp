@@ -3,7 +3,9 @@ package com.yahoo.lsbeapp;
 
 import java.util.List;
 
+import android.R.color;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +28,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.biz_item, null);
+			((SmartImageView) view.findViewById(R.id.imgBiz)).setImageResource(android.R.color.transparent);
 		}
 		if (biz.getImage() != null) {
 			((SmartImageView) view.findViewById(R.id.imgBiz)).setImageUrl(biz.getImage());

@@ -155,6 +155,8 @@ public class Listing extends BaseModel implements Serializable {
 			JSONObject reviewObj = biz.getJSONObject("reviews");
 			if (reviewObj != null && reviewObj.getInt("count") > 0) {
 				biz.reviews = Review.fromJSON(reviewObj.getJSONArray("review"));
+			} else {
+				biz.reviews = new ArrayList<Review>();
 			}
 					
 			//Image

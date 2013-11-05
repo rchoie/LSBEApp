@@ -1,12 +1,6 @@
 package com.yahoo.lsbeapp.fragments;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,9 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.yahoo.lsbeapp.R;
-import com.yahoo.lsbeapp.SearchMapResultsActivity;
-import com.yahoo.lsbeapp.db.ListingsDB;
-import com.yahoo.lsbeapp.model.Listing;
 
 public class SearchInputFragment extends Fragment {
 	

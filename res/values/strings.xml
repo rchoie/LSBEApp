@@ -14,5 +14,8 @@
 	<string name="button_bookmark">Bookmark</string>
 	<string name="button_directions">Directions</string>
 	<string name="button_picture">Add Photo</string>
+	<string name="button_map">Map</string>
+	<string name="button_list">List</string>
+	
     
 </resources>
