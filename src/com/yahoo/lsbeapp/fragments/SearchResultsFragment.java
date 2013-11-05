@@ -182,6 +182,8 @@ public class SearchResultsFragment extends Fragment {
 			
 		});
 		
+		
+		/**
 		lvBiz.setOnItemLongClickListener(new OnItemLongClickListener() {
 
 			@Override
@@ -202,6 +204,7 @@ public class SearchResultsFragment extends Fragment {
 				return false;
 			}
 		});
+		**/
 		
 		// TODO Auto-generated method stub
 		
