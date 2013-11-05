@@ -1,0 +1,7 @@
+[
+	"Restaurants",
+	"Lawyers",
+	"Coffee",
+	"Gas Stations",
+	"Grocery Stores",
+]
