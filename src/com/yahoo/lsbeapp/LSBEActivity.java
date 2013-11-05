@@ -158,7 +158,6 @@ public class LSBEActivity extends FragmentActivity implements TabListener,OnClic
 		fts.commit();
 	}
 
-
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub

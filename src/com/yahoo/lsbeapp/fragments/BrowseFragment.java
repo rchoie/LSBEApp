@@ -3,6 +3,7 @@ package com.yahoo.lsbeapp.fragments;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.lsbeapp.CategoryAdapter;
 import com.yahoo.lsbeapp.R;
 import com.yahoo.lsbeapp.model.Category;
+import com.yahoo.lsbeapp.utils.LSBEAssets;
 
 public class BrowseFragment extends Fragment {
 
@@ -61,9 +63,7 @@ public class BrowseFragment extends Fragment {
 	public void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
-		
-		//String arg = getArguments().getString("arg");
-		
+
 		String categoryQuery = "http://api1.stage.ls.sk1.yahoo.com/xmlcategories";
     	AsyncHttpClient client = new AsyncHttpClient();
 		client.get(categoryQuery,
@@ -79,6 +79,7 @@ public class BrowseFragment extends Fragment {
 	            }
 			}
 		});
+		
 	}
 
 	@Override

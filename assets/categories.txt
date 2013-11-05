@@ -3,5 +3,5 @@
 	"Lawyers",
 	"Coffee",
 	"Gas Stations",
-	"Grocery Stores",
+	"Grocery Stores"
 ]

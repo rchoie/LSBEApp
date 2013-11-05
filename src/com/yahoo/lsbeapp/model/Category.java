@@ -47,4 +47,8 @@ public class Category {
 
         return categories;
     }
+    
+    public String toString()  {
+    	return cateoryName;
+    }
 }

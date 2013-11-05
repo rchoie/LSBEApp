@@ -30,9 +30,11 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
 			view = inflater.inflate(R.layout.biz_item, null);
 			((SmartImageView) view.findViewById(R.id.imgBiz)).setImageResource(android.R.color.transparent);
 		}
+		
 		if (biz.getImage() != null) {
 			((SmartImageView) view.findViewById(R.id.imgBiz)).setImageUrl(biz.getImage());
 		}
+
 		((TextView) view.findViewById(R.id.tvTitle)).setText(biz.getTitle());
 		((TextView) view.findViewById(R.id.tvPhone)).setText(biz.getPhone());
 		((TextView) view.findViewById(R.id.tvAddress)).setText(biz.getAddress());

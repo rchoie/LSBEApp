@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -17,7 +18,6 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,6 +27,7 @@ import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.yahoo.lsbeapp.ListingAdapter;
 import com.yahoo.lsbeapp.R;
+import com.yahoo.lsbeapp.SearchMapResultsActivity;
 import com.yahoo.lsbeapp.db.ListingsDB;
 import com.yahoo.lsbeapp.model.Listing;
 import com.yahoo.lsbeapp.utils.LSBEAssets;
@@ -43,9 +44,11 @@ public class SearchResultsFragment extends Fragment {
 	private Button btnMap;
 
 	private String query;
-	private String location;
+	private String location = "NY";
 	private String lat;
 	private String lon;
+
+	private ArrayList<Listing> listings;
 
 	public interface ItemSelectedListener {
 		public void onItemSelected(String gid);
@@ -76,21 +79,59 @@ public class SearchResultsFragment extends Fragment {
 		lon = getArguments().getString("lon");
 		
 		if (query != null && location != null) {
-			lsbeSearch(query, location, null, null);
+			lsbeSearch(query, location);
+			findLocationFromCity();
 		}
 		else if (query != null && lat != null && lon != null) {
-			lsbeSearch(query, null, lat, lon);
-			location = findLocationFromLatLong(lat, lon);
+			lsbeSearch(query, null);
+			findLocationFromLatLong();
 		}
 
 	}
 	
-	private String findLocationFromLatLong(String lat, String lon) {
+	private void findLocationFromLatLong() {
 		//TODO: get location from findLocation..
-		String location = "(lat,lon)";
-		return location;
+	
+		String findLocationQuery = "http://gws2.maps.yahoo.com/findlocation?q=" + lat + "+" + lon + "&gflags=R&flags=J";
+
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(findLocationQuery, new JsonHttpResponseHandler() {
+			//private ArrayList<Listing> listings;
+
+			@Override
+			public void onSuccess(JSONObject listingsJson) {
+				try {
+					String city = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("city");
+					String state = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("statecode");
+					location = city + ", " + state;
+					tvQuery.setText(query + ", " + location);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 
+	private void findLocationFromCity() {
+		//TODO: get location from findLocation..
+	
+		String findLocationQuery = "http://gws2.maps.yahoo.com/findlocation?q=" + Uri.encode(location) + "&flags=J";
+
+		AsyncHttpClient client = new AsyncHttpClient();
+		client.get(findLocationQuery, new JsonHttpResponseHandler() {
+			//private ArrayList<Listing> listings;
+
+			@Override
+			public void onSuccess(JSONObject listingsJson) {
+				try {
+					lat = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("latitude");
+					lon = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("longitude");
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inf, ViewGroup parent, Bundle savedInstanceState) {
@@ -107,7 +148,7 @@ public class SearchResultsFragment extends Fragment {
 		}
 	}
 	
-	public void lsbeSearch(String query, String csz, String lat, String lon) {
+	public void lsbeSearch(String query, String csz) {
 
 		String xmllocalQuery = null;
 
@@ -123,12 +164,15 @@ public class SearchResultsFragment extends Fragment {
 
 		AsyncHttpClient client = new AsyncHttpClient();
 		client.get(xmllocalQuery, new JsonHttpResponseHandler() {
-			private ArrayList<Listing> listings;
+			//private ArrayList<Listing> listings;
 
 			@Override
 			public void onSuccess(JSONObject listingsJson) {
 				try {
 					listings = Listing.fromJSON(listingsJson.getJSONObject("ResultSet").getJSONArray("Result"));
+					//lat = listingsJson.getJSONObject("ResultSet").getString("lat");
+					//lon = listingsJson.getJSONObject("ResultSet").getString("lon");
+
 					getAdapter().addAll(listings);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -221,6 +265,17 @@ public class SearchResultsFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				//TODO: Call Map Activity here..
+			
+				//ListingsDB listingsDB = new ListingsDB(getActivity());
+				//listingsDB.open();
+				//ArrayList<Listing> listings = (ArrayList<Listing>) listingsDB.getAllListings();
+
+		    	Intent i = new Intent(getActivity(), SearchMapResultsActivity.class);
+		    	i.putExtra("listings", listings);
+		    	i.putExtra("lat", lat);
+		    	i.putExtra("lon", lon);
+		    	startActivity(i);
+				
 				Toast.makeText(getActivity(), "Showing Map View", Toast.LENGTH_SHORT).show();
 			}
 		});
