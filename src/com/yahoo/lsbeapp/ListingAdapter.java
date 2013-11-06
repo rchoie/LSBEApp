@@ -28,6 +28,7 @@ public class ListingAdapter extends ArrayAdapter<Listing> {
 		if (convertView == null) {
 			LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			view = inflater.inflate(R.layout.biz_item, null);
+		} else {
 			((SmartImageView) view.findViewById(R.id.imgBiz)).setImageResource(android.R.color.transparent);
 		}
 		

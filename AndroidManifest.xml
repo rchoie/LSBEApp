@@ -40,6 +40,12 @@
             android:name="com.yahoo.lsbeapp.SearchMapResultsActivity"
             android:label="@string/title_activity_search_map_results" >
         </activity>
-    </application>
+        
+       
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        
+</application>
 
 </manifest>

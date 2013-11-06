@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.loopj.android.image.SmartImageView;
 import com.yahoo.lsbeapp.model.Review;
 
 public class ReviewAdapter extends ArrayAdapter<Review> {
@@ -28,8 +29,8 @@ public class ReviewAdapter extends ArrayAdapter<Review> {
 		
 		((TextView) view.findViewById(R.id.tvAlias)).setText(review.getAlias());
 		((TextView) view.findViewById(R.id.tvDate)).setText(review.getDate());
+		((SmartImageView) view.findViewById(R.id.imgRating)).setImageResource(review.getRatingIcon());
 		((TextView) view.findViewById(R.id.tvText)).setText(review.truncatedString(review.getText(), 100));
-		
 		return view;
 	}
 }

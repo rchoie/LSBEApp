@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.yahoo.lsbeapp.R;
 
 public class Review extends BaseModel {
 	private String alias;
@@ -17,16 +18,54 @@ public class Review extends BaseModel {
 	}
 	
 	public String getAlias() {
-		return alias;
+		return ("".equals(alias)) ? "Kelly Hu" : alias;
 	}
+	
 	public String getDate() {
 		return date;
 	}
+	
 	public String getText() {
 		return review;
 	}
+	
 	public String getRating() {
 		return rating;
+	}
+
+	public int getRatingIcon() {
+		int intRating = 0;
+		int ratingIcon;
+		try {
+			intRating = Integer.parseInt(rating);
+			intRating = Math.round(intRating);
+			if (intRating < 0 || intRating > 5) {
+				intRating = 0;
+			}
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
+		switch (intRating) {
+		case 2:
+			ratingIcon = R.drawable.star2;
+			break;
+		case 3:
+			ratingIcon = R.drawable.star3;
+			break;
+		case 4:
+			ratingIcon = R.drawable.star4;
+			break;
+		case 5:
+			ratingIcon = R.drawable.star5;
+			break;
+		case 0:
+		case 1:
+		default:
+			ratingIcon = R.drawable.star1;
+			break;
+
+		}
+		return ratingIcon;
 	}
 	
 	public static Review fromJSON(JSONObject jsonObj) {
@@ -36,7 +75,12 @@ public class Review extends BaseModel {
 		if (review.date != null) {
 			review.date = review.date.substring(0, review.date.indexOf(" "));
 		}
-		review.review = review.getString("text");
+		String text = review.getString("text");
+		if (text != null) {
+			text = text.substring(1);
+			review.review = text;
+		}
+		
 		review.rating = review.getString("rating");
 		return review;
 	}
