@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,6 +134,7 @@ public class SearchResultsFragment extends Fragment {
 				try {
 					lat = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("latitude");
 					lon = listingsJson.getJSONObject("ResultSet").getJSONObject("Result").getString("longitude");
+					tvQuery.setText(query + ", " + location);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -261,7 +263,7 @@ public class SearchResultsFragment extends Fragment {
 	}
 	
 	private void setUpViews() {
-		btnMap = (Button) getActivity().findViewById(R.id.btnMap);
+		btnMap = (Button) getActivity().findViewById(R.id.btnMap1);
 		tvQuery = (TextView) getActivity().findViewById(R.id.tvQuery);
 		lvBiz = (ListView) getActivity().findViewById(R.id.lvBiz);
 	}

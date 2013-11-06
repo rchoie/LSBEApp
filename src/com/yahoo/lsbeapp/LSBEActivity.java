@@ -105,7 +105,8 @@ public class LSBEActivity extends FragmentActivity implements TabListener,OnClic
 			fts.replace(R.id.frame_container, browseFragment);
 		}
 		else if (tab.getTag() == "SearchFragment") {
-	 		SearchInputFragment searchInputFragment = new SearchInputFragment();
+	 		//SearchInputFragment searchInputFragment = new SearchInputFragment();
+	 		SearchInputFragment searchInputFragment = SearchInputFragment.newInstance(lat, lon);
 			fts.replace(R.id.frame_container, searchInputFragment);
 		}
 		else {
@@ -140,9 +141,23 @@ public class LSBEActivity extends FragmentActivity implements TabListener,OnClic
 	 * Implement listener for Button (search) Event
 	 */
 	@Override
-	public void onSearchButtonClick(String query, String location) {
+	public void onSearchButtonClick(String query, String location, String lat, String lon) {
+		
+		if (query == null || query.isEmpty()) {
+			return;
+		}
+
 		android.support.v4.app.FragmentTransaction fts = getSupportFragmentManager().beginTransaction();
-		fts.replace(R.id.frame_container, SearchResultsFragment.newInstance(query, location, null, null));
+		Log.d("DEBUG", "location : " + location);
+		Log.d("DEBUG", "lat : " + lat);
+		Log.d("DEBUG", "lon : " + lon);
+
+		if (location != null && !location.isEmpty()) {
+			fts.replace(R.id.frame_container, SearchResultsFragment.newInstance(query, location, null, null));
+		}
+		else {
+			fts.replace(R.id.frame_container, SearchResultsFragment.newInstance(query, null, lat, lon));
+		}
 		fts.commit();
 	}
 	

@@ -34,6 +34,11 @@ public class ListingsDB {
 
 		Log.d("DEBUG", "Add listing " + listing.getTitle());
 
+		ArrayList<Listing> listings = (ArrayList<Listing>) getListingByGid(listing.getId());
+		if (listings.size() == 1) {
+			return;
+		}
+		
 		ContentValues values = new ContentValues();
 		values.put(SQLiteHelper.GID, listing.getId());
 		values.put(SQLiteHelper.TITLE, listing.getTitle());
@@ -69,6 +74,38 @@ public class ListingsDB {
 							  };
 		
 		Cursor cursor = database.query(SQLiteHelper.TABLE_NAME, allColumns, null, null, null, null, null);
+	    cursor.moveToFirst();
+	    while (!cursor.isAfterLast()) {
+		      Listing listing = cursorToListing(cursor);
+		      listings.add(listing);
+		      cursor.moveToNext();
+		}
+	    cursor.close();
+	    return listings;
+
+	}
+	
+	public List<Listing> getListingByGid(String gid) {
+		
+		List<Listing> listings = new ArrayList<Listing>();
+		String[] allColumns = { SQLiteHelper.ID,
+								SQLiteHelper.GID,
+			     				SQLiteHelper.TITLE,
+			     				SQLiteHelper.STREET,
+			     				SQLiteHelper.CITY,
+			     				SQLiteHelper.STATE,
+			     				SQLiteHelper.LAT,
+			     				SQLiteHelper.LON,
+			     				SQLiteHelper.PHONE,
+			     				SQLiteHelper.IMAGE,
+			     				SQLiteHelper.RATING,
+			     				SQLiteHelper.TIMESTAMP
+							  };
+		
+		String selection = SQLiteHelper.GID + " = ?";
+		String[] selectionArgs = { gid };
+
+		Cursor cursor = database.query(SQLiteHelper.TABLE_NAME, allColumns, selection, selectionArgs, null, null, null);
 	    cursor.moveToFirst();
 	    while (!cursor.isAfterLast()) {
 		      Listing listing = cursorToListing(cursor);
